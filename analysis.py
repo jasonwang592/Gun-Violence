@@ -37,4 +37,8 @@ sg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000
 sg_df['Missing'] = sg_df['Deaths'] == 0
 
 
+'''Analysis by State, Year and Gender'''
+
+
+
 
