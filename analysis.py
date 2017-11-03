@@ -2,7 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import itertools
 import plotly.graph_objs as go
-from plotly.offline import plot
+from plotly.offline import plot, iplot
+import os
+import shutil
+
+download_path = '/Users/jason.wang/Downloads/'
+output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/'
 
 
 sg_df = pd.read_csv('files/state_gender.txt', sep = '\t')
@@ -124,11 +129,14 @@ data = dict(type='choropleth',
 
 layout = dict(
 		geo = dict(scope='usa', projection = dict(type = 'albers usa'),
-					showlakes= False)
+					showlakes= False),
+		title = 'Firearm Deaths by State in' + year,
              )
 
 choromap = go.Figure(data=[data], layout=layout)
-plot(choromap)
+fname = 'test'
+plot(choromap, image_filename = 'test', image_width = 1200, image_height = 1000)
+# shutil.move(download_path + fname + '.png', output_path + fname + '.png')
 
 
 
