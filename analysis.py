@@ -5,7 +5,13 @@ import plotly.graph_objs as go
 from plotly.offline import plot, iplot
 import os
 import shutil
+import choropleth_helper
 
+
+'''Fill in below with proper paths:
+    download_path = Directory where browser downloads plots from plotly into
+    output_path = Directory where output files are stored
+'''
 download_path = '/Users/jason.wang/Downloads/'
 output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/'
 
@@ -92,14 +98,14 @@ df1 = pd.DataFrame(columns = ['State', 'Year', 'Gender'], data=list(itertools.pr
 
 sg_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)
 sga_df.drop(['Notes', 'Crude Rate', 'Ten-Year Age Groups', 'Gender Code', 'Year Code', 'State Code'],
-	inplace = True, axis = 1)
+    inplace = True, axis = 1)
 
 sga_df.rename(columns = {'Ten-Year Age Groups Code': 'Age Group'}, inplace = True)
 sg_df = df1.merge(sg_df, how = 'left').fillna(0)
 sg_df['State Code'] = sg_df['State'].map(inverted)
 sg_df.Year = sg_df.Year.astype(int).astype(str)
-sg_df.Population = sg_df.Population.astype(float)
 sga_df.Year = sga_df.Year.astype(int).astype(str)
+sg_df.Population = sg_df.Population.astype(float)
 sga_df.Population = sga_df.Population.astype(float)
 
 sga_df['Rate'] = (sga_df.Deaths/sga_df.Population) * 100000
@@ -108,42 +114,27 @@ sg_df['Missing'] = sg_df['Deaths'] == 0
 sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
 
-'''Analysis by State, Year and Gender'''
-# state_df = sg_df.groupby(['State','Year']).sum()
-# print(state_df)
-sg_df = sg_df.loc[(sg_df['Year'] == '1999') & (sg_df['Gender'] == 'Male')]
-print(sg_df)
-
-
-scl = [[0.0, 'rgb(242,240,247)'],[0.2, 'rgb(218,218,235)'],[0.4, 'rgb(188,189,220)'],\
-            [0.6, 'rgb(158,154,200)'],[0.8, 'rgb(117,107,177)'],[1.0, 'rgb(84,39,143)']]
-
-data = dict(type='choropleth',
-            locations = sg_df['State Code'],
-            locationmode ='USA-states',
-            z = sg_df['Deaths'].astype(int),
-			colorscale = scl,
-			autocolorscale = False,
-            colorbar = dict(title = 'Firearm Deaths per 100K')
-            )
-
-layout = dict(
-		geo = dict(scope='usa', projection = dict(type = 'albers usa'),
-					showlakes= False),
-		title = 'Firearm Deaths by State in' + year,
-             )
-
-choromap = go.Figure(data=[data], layout=layout)
-fname = 'test'
-plot(choromap, image_filename = 'test', image_width = 1200, image_height = 1000)
-# shutil.move(download_path + fname + '.png', output_path + fname + '.png')
-
-
-
-
-
-
-
+'''Analysis by State, Year and Gender
+Params:
+        - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
+        - title = Plot title
+        - scale_title = Scale title
+'''
+year_list = list(sg_df['Year'].unique())
+gender_list = ['Male' , 'Female']
+split_gender = True
+scale_title = 'Firearm deaths per 100K'
+metric = 'Deaths'
+for year in year_list:
+    if split_gender:
+        for gender in gender_list:
+            title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
+            # choropleth_df = sg_df.loc[(sg_df['Year'] == year) & (sg_df['Gender'] == gender)]
+            choropleth_helper.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_path)
+    else:
+        title = ' '.join(filter(None, ['Firearm Deaths in', year]))
+        choropleth_df = sg_df.loc[(sg_df['Year'] == year)]
+        choropleth_helper.choropleth(choropleth_df, year, gender_list, metric, title, scale_title, download_path, output_path)
 
 
 
