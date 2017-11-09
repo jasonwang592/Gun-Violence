@@ -125,11 +125,11 @@ gender_list = ['Male' , 'Female']
 split_gender = True
 scale_title = 'Firearm deaths per 100K'
 metric = 'Deaths'
+
 for year in year_list:
     if split_gender:
         for gender in gender_list:
             title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
-            # choropleth_df = sg_df.loc[(sg_df['Year'] == year) & (sg_df['Gender'] == gender)]
             choropleth_helper.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_path)
     else:
         title = ' '.join(filter(None, ['Firearm Deaths in', year]))

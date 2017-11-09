@@ -1,17 +1,19 @@
 import plotly.graph_objs as go
 from plotly.offline import plot, iplot
 import os
+import pandas as pd
 import shutil
 import time
 
 def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_dir, output_dir):
     year = str(year)
-    gender = gender.split()
+    if isinstance(gender, str):
+      gender = gender.split()
     df = df.loc[(df['Year'] == year) & (df['Gender'].isin(gender))]
-    print(df)
+    df = df[pd.notnull(df[metric_name])]
 
-    scl = [[0.0, 'rgb(242,240,247)'],[0.2, 'rgb(218,218,235)'],[0.4, 'rgb(188,189,220)'],\
-        [0.6, 'rgb(158,154,200)'],[0.8, 'rgb(117,107,177)'],[1.0, 'rgb(84,39,143)']]
+    scl = [(0.0, 'rgb(254,240,217)'), (0.2, 'rgb(253,212,158)'), (0.4, 'rgb(253,187,132)'),\
+        (0.6, 'rgb(252,141,89)'), (0.8, 'rgb(227,74,51)'), (1.0, 'rgb(196, 53, 31)')]
 
     data = dict(type='choropleth',
         locations = df['State Code'],
@@ -24,7 +26,7 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
 
     layout = dict(
         geo = dict(scope='usa', projection = dict(type = 'albers usa'),
-        showlakes= False),
+        showlakes= False, landcolor = 'rgb(213, 213, 211)'),
         title = chart_title,
         )
 
@@ -37,6 +39,6 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
     plot(choromap, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
     time.sleep(3)
     if os.path.exists(output_dir + fname + '.png'):
-        shutil.move(download_dir + fname + '.png', output_dir + fname + '.png')
+      shutil.move(download_dir + fname + '.png', output_dir + fname + '.png')
     else:
-        shutil.move(download_dir + fname + '.png', output_dir)
+      shutil.move(download_dir + fname + '.png', output_dir)
