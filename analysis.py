@@ -122,19 +122,22 @@ Params:
 '''
 year_list = list(sg_df['Year'].unique())
 gender_list = ['Male' , 'Female']
-split_gender = True
+split_gender = False
 scale_title = 'Firearm deaths per 100K'
 metric = 'Deaths'
+metric_dir = output_path + metric + '/'
 
 for year in year_list:
     if split_gender:
         for gender in gender_list:
+            output_dir = metric_dir + gender + '/'
             title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
-            choropleth_helper.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_path)
+            choropleth_helper.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_dir)
     else:
+        output_dir = metric_dir + 'Combined/'
         title = ' '.join(filter(None, ['Firearm Deaths in', year]))
         choropleth_df = sg_df.loc[(sg_df['Year'] == year)]
-        choropleth_helper.choropleth(choropleth_df, year, gender_list, metric, title, scale_title, download_path, output_path)
+        choropleth_helper.choropleth(choropleth_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
 
 
 

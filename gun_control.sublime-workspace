@@ -4,16 +4,56 @@
 		"selected_items":
 		[
 			[
+				"output",
+				"output_path\tstatement"
+			],
+			[
+				"chro",
+				"choropleth_helper\tmodule"
+			],
+			[
+				"try",
+				"try\tTry/Except"
+			],
+			[
+				"oput",
+				"output_path"
+			],
+			[
+				"all",
+				"all_genders"
+			],
+			[
+				"st",
+				"state_df"
+			],
+			[
+				"sg",
+				"sg_df"
+			],
+			[
+				"age",
+				"age_agg_df"
+			],
+			[
+				"sa",
+				"sga_df"
+			],
+			[
+				"stat",
+				"state_gender_df"
+			],
+			[
+				"state",
+				"state_gender_df\tstatement"
+			],
+			[
 				"tot",
 				"tot_revenue\tstatement"
 			],
 			[
 				"bin",
 				"bin_search\tfunction"
-			],
-			[
-				"all",
-				"all_string_permutation\tfunction"
 			],
 			[
 				"assert",
@@ -383,6 +423,39 @@
 	},
 	"buffers":
 	[
+		{
+			"contents": "import pandas as pd\nimport matplotlib.pyplot as plt\nimport itertools\nimport plotly.graph_objs as go\nfrom plotly.offline import plot, iplot\nimport os\nimport shutil\nimport choropleth_helper\n\ndownload_path = '/Users/jason.wang/Downloads/'\noutput_path = '/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/'\n\n\nsg_df = pd.read_csv('files/state_gender.txt', sep = '\\t')\nsga_df = pd.read_csv('files/state_gender_age.txt', sep = '\\t')\n\n'''\n* Filling DataFrame with all possible combinations of State, Year and Gender so we can infer some values\nlater during aggregation by taking the average there is missing data. Marking columns that were previously missing\nso we can denote that on US map representation\n* Cleaning up some redundant columns. Removed some rows where data had not been collected yet\nRecalculating the rate per 100k\n'''\nall_years = [1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015]\nall_genders = ['Male', 'Female']\nall_states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',\n\t'District of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',\n\t'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska',\n\t'Nevada', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',\n\t'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']\nstate_map = {\n        'AK': 'Alaska',\n        'AL': 'Alabama',\n        'AR': 'Arkansas',\n        'AS': 'American Samoa',\n        'AZ': 'Arizona',\n        'CA': 'California',\n        'CO': 'Colorado',\n        'CT': 'Connecticut',\n        'DC': 'District of Columbia',\n        'DE': 'Delaware',\n        'FL': 'Florida',\n        'GA': 'Georgia',\n        'GU': 'Guam',\n        'HI': 'Hawaii',\n        'IA': 'Iowa',\n        'ID': 'Idaho',\n        'IL': 'Illinois',\n        'IN': 'Indiana',\n        'KS': 'Kansas',\n        'KY': 'Kentucky',\n        'LA': 'Louisiana',\n        'MA': 'Massachusetts',\n        'MD': 'Maryland',\n        'ME': 'Maine',\n        'MI': 'Michigan',\n        'MN': 'Minnesota',\n        'MO': 'Missouri',\n        'MP': 'Northern Mariana Islands',\n        'MS': 'Mississippi',\n        'MT': 'Montana',\n        'NA': 'National',\n        'NC': 'North Carolina',\n        'ND': 'North Dakota',\n        'NE': 'Nebraska',\n        'NH': 'New Hampshire',\n        'NJ': 'New Jersey',\n        'NM': 'New Mexico',\n        'NV': 'Nevada',\n        'NY': 'New York',\n        'OH': 'Ohio',\n        'OK': 'Oklahoma',\n        'OR': 'Oregon',\n        'PA': 'Pennsylvania',\n        'PR': 'Puerto Rico',\n        'RI': 'Rhode Island',\n        'SC': 'South Carolina',\n        'SD': 'South Dakota',\n        'TN': 'Tennessee',\n        'TX': 'Texas',\n        'UT': 'Utah',\n        'VA': 'Virginia',\n        'VI': 'Virgin Islands',\n        'VT': 'Vermont',\n        'WA': 'Washington',\n        'WI': 'Wisconsin',\n        'WV': 'West Virginia',\n        'WY': 'Wyoming'\n}\ninverted = {state:abbrev for abbrev,state in state_map.items()}\ncombined = [all_states, all_years, all_genders]\ndf1 = pd.DataFrame(columns = ['State', 'Year', 'Gender'], data=list(itertools.product(*combined)))\n\nsg_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)\nsga_df.drop(['Notes', 'Crude Rate', 'Ten-Year Age Groups', 'Gender Code', 'Year Code', 'State Code'],\n\tinplace = True, axis = 1)\n\nsga_df.rename(columns = {'Ten-Year Age Groups Code': 'Age Group'}, inplace = True)\nsg_df = df1.merge(sg_df, how = 'left').fillna(0)\nsg_df['State Code'] = sg_df['State'].map(inverted)\nsg_df.Year = sg_df.Year.astype(int).astype(str)\nsga_df.Year = sga_df.Year.astype(int).astype(str)\nsg_df.Population = sg_df.Population.astype(float)\nsga_df.Population = sga_df.Population.astype(float)\n\nsga_df['Rate'] = (sga_df.Deaths/sga_df.Population) * 100000\nsg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000\nsg_df['Missing'] = sg_df['Deaths'] == 0\nsg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]\n\n\n'''Analysis by State, Year and Gender\nParams:\n        - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise\n        - title = Plot title\n        - scale_title = Scale title\n'''\nyear_list = list(sg_df['Year'].unique())\ngender_list = ['Male' , 'Female']\nsplit_gender = True\nscale_title = 'Firearm deaths per 100K'\nfor year in year_list:\n        if split_gender:\n        \tfor gender in gender_list:\n                        title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year])\n                        choropleth_df = sg_df.loc[(sg_df['Year'] == year) & (sg_df['Gender'] in gender)]\n                        choropleth_helper.choropleth(choropleth_df, year, gender, metric, title, scale_title, output_path)\n        else:\n                title = ' '.join(filter(None, ['Firearm Deaths in', year])\n                choropleth_df = sg_df.loc[(sg_df['Year'] == year)]\n                choropleth_helper.choropleth(choropleth_df, year, gender_list, metric, title, scale_title, output_path)\n\n\n\n",
+			"file": "analysis.py",
+			"file_size": 5285,
+			"file_write_time": 131544675880000000,
+			"settings":
+			{
+				"buffer_size": 5285,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "import pandas as pd"
+			}
+		},
+		{
+			"contents": "import plotly.graph_objs as go\nfrom plotly.offline import plot, iplot\nimport os\nimport shutil\n\ndef choropleth(df, year, gender, metric_name, chart_title, bar_title, output_folder):\n\tyear = str(year)\n\tdf = df.loc[(df['Year'] == year) & (df['Gender'] in gender)]\n\n\tscl = [[0.0, 'rgb(242,240,247)'],[0.2, 'rgb(218,218,235)'],[0.4, 'rgb(188,189,220)'],\\\n\t        [0.6, 'rgb(158,154,200)'],[0.8, 'rgb(117,107,177)'],[1.0, 'rgb(84,39,143)']]\n\n\tdata = dict(type='choropleth',\n\t        locations = df['State Code'],\n\t        locationmode ='USA-states',\n\t        z = df[metric_name].astype(int),\n\t\t\tcolorscale = scl,\n\t\t\tautocolorscale = False,\n\t        colorbar = dict(title = bar_title)\n\t        )\n\n\tlayout = dict(\n\t\tgeo = dict(scope='usa', projection = dict(type = 'albers usa'),\n\t\t\t\t\tshowlakes= False),\n\t\ttitle = chart_title,\n\t         )\n\n\tchoromap = go.Figure(data=[data], layout=layout)\n\tfname = year + gender + metric_name\n\tplot(choromap, image_filename = fname, image_width = 1200, image_height = 1000)\n\t# shutil.move(download_path + fname + '.png', output_path + fname + '.png')",
+			"file": "choropleth_helper.py",
+			"file_size": 1077,
+			"file_write_time": 131544189600000000,
+			"settings":
+			{
+				"buffer_size": 1077,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 21782,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -408,15 +481,119 @@
 	"command_palette":
 	{
 		"height": 354.0,
-		"last_filter": "ling",
+		"last_filter": "git co",
 		"selected_items":
 		[
 			[
-				"ling",
-				"Anaconda: Disable linting on this file"
+				"git co",
+				"Git: Commit"
+			],
+			[
+				"git add",
+				"Git: Add Current File"
+			],
+			[
+				"git ad",
+				"Git: Add Current File"
 			],
 			[
 				"dis",
+				"Anaconda: Disable linting on this file"
+			],
+			[
+				"git change",
+				"Git: Change Branch"
+			],
+			[
+				" git co",
+				"Git: Commit"
+			],
+			[
+				"git mer",
+				"Git: Merge Branch"
+			],
+			[
+				"git ",
+				"Git: Pull"
+			],
+			[
+				"git fet",
+				"Git: Fetch"
+			],
+			[
+				"git stash",
+				"Git: Stash Changes"
+			],
+			[
+				"git bran",
+				"Git: New Branch"
+			],
+			[
+				"git del",
+				"Git: Delete Branch"
+			],
+			[
+				"git delete",
+				"Git: Delete Branch"
+			],
+			[
+				"git stas",
+				"Git: Stash Apply"
+			],
+			[
+				"diff",
+				"Git: Diff All Files"
+			],
+			[
+				"change",
+				"Git: Change Branch"
+			],
+			[
+				"git fetc",
+				"Git: Fetch"
+			],
+			[
+				"git checkout",
+				"Git: Checkout Current File"
+			],
+			[
+				"git pu",
+				"Git: Pull Using Rebase"
+			],
+			[
+				"git sta",
+				"Git: Stash Apply"
+			],
+			[
+				"co",
+				"Git: Commit"
+			],
+			[
+				"git com",
+				"Git: Commit"
+			],
+			[
+				"gitgutter",
+				"Preferences: GitGutter Settings"
+			],
+			[
+				"add",
+				"Git: Add..."
+			],
+			[
+				"comm",
+				"Git: Commit"
+			],
+			[
+				"gitgu",
+				"GitGutter: Support Info"
+			],
+			[
+				"git",
+				"Git: Add All"
+			],
+			[
+				"ling",
 				"Anaconda: Disable linting on this file"
 			],
 			[
@@ -426,14 +603,6 @@
 			[
 				"git c",
 				"Git: Commit"
-			],
-			[
-				"git ad",
-				"Git: Add All"
-			],
-			[
-				"git ",
-				"Git: Init"
 			],
 			[
 				"git st",
@@ -492,14 +661,6 @@
 				"Git: Commit"
 			],
 			[
-				"git add",
-				"Git: Add Current File"
-			],
-			[
-				"git co",
-				"Git: Commit"
-			],
-			[
 				"reset",
 				"Git: Reset (unstage) All"
 			],
@@ -510,22 +671,6 @@
 			[
 				"",
 				"Convert Case: Swap Case"
-			],
-			[
-				"git bran",
-				"Git: New Branch"
-			],
-			[
-				"git fet",
-				"Git: Fetch"
-			],
-			[
-				"add",
-				"Git: Add..."
-			],
-			[
-				"git mer",
-				"Git: Merge Branch"
 			],
 			[
 				"git bra",
@@ -560,10 +705,6 @@
 				"Anaconda: Disable linting on this file"
 			],
 			[
-				"change",
-				"Git: Change Branch"
-			],
-			[
 				"cus",
 				"Git: Custom Command"
 			],
@@ -596,20 +737,12 @@
 				"Git: Commit"
 			],
 			[
-				"co",
-				"Git: Commit history"
-			],
-			[
 				"ad",
 				"Git: Add Current File"
 			],
 			[
 				"commit",
 				"Git: Commit"
-			],
-			[
-				"git",
-				"Git: Init"
 			],
 			[
 				"dis lint",
@@ -636,10 +769,6 @@
 				"Git: Add All"
 			],
 			[
-				"git del",
-				"Git: Delete Branch"
-			],
-			[
 				"git chan",
 				"Git: Change Branch"
 			],
@@ -658,10 +787,6 @@
 			[
 				"revert",
 				"File: Revert"
-			],
-			[
-				"git change",
-				"Git: Change Branch"
 			],
 			[
 				"gs",
@@ -772,10 +897,6 @@
 				"Git: Commit"
 			],
 			[
-				"git pu",
-				"Git: Pull"
-			],
-			[
 				"git p",
 				"Git: Pull Current Branch"
 			],
@@ -800,7 +921,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 431.0
+		"width": 472.0
 	},
 	"console":
 	{
@@ -820,10 +941,15 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control"
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files"
 	],
 	"file_history":
 	[
+		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/choropleth_helper.py",
+		"/Users/jason.wang/Downloads/Untitled.py",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/state_gender_age.txt",
 		"/Users/jason.wang/Documents/Analytics Projects/Hurricane Harvey Tweets/Harvey_Tweets/tweet_analysis.py",
 		"/Users/jason.wang/Documents/packaging_log.py",
 		"/Users/jason.wang/Desktop/chipotle.tsv",
@@ -908,6 +1034,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"auto",
+			"\"",
+			"not appl",
 			"location",
 			"lat",
 			"time",
@@ -958,6 +1087,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"'",
 			"sn",
 			"counter"
 		],
@@ -970,8 +1100,156 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "analysis.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5285,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4257,
+								4257
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source, text.html"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"auto_name": "import pandas as pd",
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 8,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1181.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "choropleth_helper.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1077,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								224,
+								226
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 21782,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								323,
+								323
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": false,
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 156.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -981,7 +1259,7 @@
 	},
 	"input":
 	{
-		"height": 31.0
+		"height": 42.0
 	},
 	"layout":
 	{
@@ -1008,7 +1286,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 345.0
+		"height": 64.0
 	},
 	"output.find_results":
 	{
@@ -1017,6 +1295,10 @@
 	"output.git":
 	{
 		"height": 164.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
 	},
 	"pinned_build_system": "Packages/Python/Python.sublime-build",
 	"project": "gun_control.sublime-project",
@@ -1076,7 +1358,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 257.0,
+	"side_bar_width": 296.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
