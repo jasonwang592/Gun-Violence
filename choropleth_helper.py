@@ -4,12 +4,37 @@ import os
 import pandas as pd
 import shutil
 import time
+import numpy as np
 
 def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_dir, output_dir):
+  '''Splits out dataframe based on filter criteria provided, plots the data on a choropleth via Plotly
+  and then saves the image to the user's download directory before moving it to a specific output directory
+
+  Args:
+    df            (DataFrame): DataFrame containing relevant data
+    year          (str)      : String representing year to filter the data on
+    Gender        (list)     : List containing gender(s) to filter data on
+    metric        (str)      : The relevant metric that is being plotted
+    chart_title   (str)      : String containing chart title
+    bar_title     (str)      : String containing colorbar title
+    download_dir  (str)      : String for download directory where to find images after Plotly generates them
+    output_dir    (str)      : String for output directory for where to move images after generation
+
+  Raises:
+    FileNotFoundError: If image file is not generated fast enough, file will not be found to move from
+      download directory to output directory. Raises an error with message on what image failed to generate.
+
+  '''
   year = str(year)
   if isinstance(gender, str):
     gender = gender.split()
-  df = df.loc[(df['Year'] == year) & (df['Gender'].isin(gender))]
+
+  #Filter out gender and then build a consistent array for ticks for each gender
+  df = df.loc[df['Gender'].isin(gender)]
+  print(max(df[metric_name]))
+  tickarray = np.linspace(0, max(df[metric_name]), 11, dtype = int, endpoint = True)
+  ticklabs = [str(num) for num in tickarray]
+  df = df.loc[df['Year'] == year]
   df = df[pd.notnull(df[metric_name])]
 
   if isinstance(gender, list):
@@ -24,7 +49,12 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
       z = df[metric_name].astype(int),
       colorscale = scl,
       autocolorscale = False,
-      colorbar = dict(title = bar_title)
+      colorbar = dict(
+        title = bar_title,
+        tick0 = 0,
+        tickmode = 'array',
+        tickvals = tickarray,
+        ticktext = ticklabs)
       )
 
   layout = dict(

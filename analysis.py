@@ -96,12 +96,22 @@ inverted = {state:abbrev for abbrev,state in state_map.items()}
 combined = [all_states, all_years, all_genders]
 df1 = pd.DataFrame(columns = ['State', 'Year', 'Gender'], data=list(itertools.product(*combined)))
 
+#Drop some useless data and left merge so we don't have missing keys on year and state
 sg_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)
 sga_df.drop(['Notes', 'Crude Rate', 'Ten-Year Age Groups', 'Gender Code', 'Year Code', 'State Code'],
     inplace = True, axis = 1)
-
 sga_df.rename(columns = {'Ten-Year Age Groups Code': 'Age Group'}, inplace = True)
 sg_df = df1.merge(sg_df, how = 'left').fillna(0)
+
+'''Use District of Columbia to hold dummy data about the max Death value for each gender so
+colorbar in choropleth is consistent'''
+
+sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Male'),['Deaths']]\
+    = max(sg_df[sg_df['Gender'] == 'Male']['Deaths'])
+sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Female'),['Deaths']]\
+    = max(sg_df[sg_df['Gender'] == 'Female']['Deaths'])
+
+
 sg_df['State Code'] = sg_df['State'].map(inverted)
 sg_df.Year = sg_df.Year.astype(int).astype(str)
 sga_df.Year = sga_df.Year.astype(int).astype(str)
@@ -113,7 +123,6 @@ sg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000
 sg_df['Missing'] = sg_df['Deaths'] == 0
 sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
-
 '''Analysis by State, Year and Gender
 Params:
         - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
@@ -123,7 +132,7 @@ Params:
 year_list = list(sg_df['Year'].unique())
 gender_list = ['Male' , 'Female']
 split_gender = False
-scale_title = 'Firearm deaths per 100K'
+scale_title = 'Firearm deaths'
 metric = 'Deaths'
 metric_dir = output_path + metric + '/'
 
@@ -136,7 +145,6 @@ for year in year_list:
     else:
         output_dir = metric_dir + 'Combined/'
         title = ' '.join(filter(None, ['Firearm Deaths in', year]))
-        choropleth_df = sg_df.loc[(sg_df['Year'] == year)]
         choropleth_helper.choropleth(choropleth_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
 
 
