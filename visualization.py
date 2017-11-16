@@ -7,6 +7,62 @@ import time
 import numpy as np
 import sys
 
+def stackedBar(year, xgroups, killed, injured, download_dir, output_dir):
+  x = xgroups
+  y = killed
+  y2 = injured
+
+  trace1 = go.Bar(
+      x = x,
+      y = y,
+      text = y,
+      name = 'Killed',
+      textposition = 'auto',
+      marker = dict(
+          color ='rgb(158,202,225)',
+          line = dict(
+              color='rgb(8,48,107)',
+              width=1.5),
+          ),
+      opacity = 0.6
+  )
+
+  trace2 = go.Bar(
+      x = x,
+      y = y2,
+      text = y2,
+      name = 'Injured',
+      textposition = 'auto',
+      marker = dict(
+          color= 'rgb(58,200,225)',
+          line = dict(
+              color ='rgb(8,48,107)',
+              width =1.5),
+          ),
+      opacity = 0.6
+  )
+
+  data = [trace1,trace2]
+  layout = go.Layout(
+    barmode='stack'
+  )
+  fname = 'Gun Violence Casualties in ' + str(year)
+
+  '''Plot the image and set a wait time so Plotly can generate the plot, save it and then move it to the
+  correct output directory. If the process takes too long, increase the sleep time'''
+  plot(data, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
+  time.sleep(3)
+
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+  try:
+    if os.path.exists(output_dir + fname + '.png'):
+      shutil.move(download_dir + fname + '.png', output_dir + fname + '.png')
+    else:
+      shutil.move(download_dir + fname + '.png', output_dir)
+  except FileNotFoundError as err:
+    print('Graph not generated in time for: ' + fname + '. Run this stacked bar chart separately.')
+
 def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_dir, output_dir, include_dc = False):
   '''Splits out dataframe based on filter criteria provided, plots the data on a choropleth via Plotly
   and then saves the image to the user's download directory before moving it to a specific output directory
