@@ -5,8 +5,9 @@ import pandas as pd
 import shutil
 import time
 import numpy as np
+import sys
 
-def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_dir, output_dir):
+def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_dir, output_dir, include_dc = False):
   '''Splits out dataframe based on filter criteria provided, plots the data on a choropleth via Plotly
   and then saves the image to the user's download directory before moving it to a specific output directory
 
@@ -19,21 +20,40 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
     bar_title     (str)      : String containing colorbar title
     download_dir  (str)      : String for download directory where to find images after Plotly generates them
     output_dir    (str)      : String for output directory for where to move images after generation
+    include_dc    (bool)     : Boolean to include DC or not since it introduces severe outliers
 
   Raises:
     FileNotFoundError: If image file is not generated fast enough, file will not be found to move from
       download directory to output directory. Raises an error with message on what image failed to generate.
 
   '''
+  caption = []
+  if include_dc:
+    caption = [dict(text = '*Data includes District of Columbia',
+              showarrow=False,
+              xref="paper", yref="paper",
+              x=0.005, y=0.05),
+              dict(text = 'DC Death Rate per 100k: ' + str(round(df[df['State Code'] == 'DC']['Rate'].values[0], 2)),
+              showarrow=False,
+              xref="paper", yref="paper",
+              x=0.005, y=0.025)]
+  elif not include_dc and metric_name == 'Rate':
+    df.loc[(df['State Code'] == 'DC') & (df['Gender'] == gender), ['Rate']] = max(df[(df['State Code'] != 'DC') & (df['Gender'] == gender)]['Rate'])
+  else:
+    df = df[df['State Code'] != 'DC']
+
   year = str(year)
   if isinstance(gender, str):
     gender = gender.split()
 
   #Filter out gender and then build a consistent array for ticks for each gender
   df = df.loc[df['Gender'].isin(gender)]
-  print(max(df[metric_name]))
-  tickarray = np.linspace(0, max(df[metric_name]), 11, dtype = int, endpoint = True)
-  ticklabs = [str(num) for num in tickarray]
+  if metric_name == 'Deaths':
+    tickarray = np.linspace(0, np.nanmax(df['Rate'].values), 11, dtype = int, endpoint = True)
+  else:
+    tickarray = np.linspace(0, np.nanmax(df['Rate'].values), 11, dtype = float, endpoint = True)
+  ticklabs = [str(round(num,1)) for num in tickarray]
+
   df = df.loc[df['Year'] == year]
   df = df[pd.notnull(df[metric_name])]
 
@@ -46,24 +66,26 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
   data = dict(type='choropleth',
       locations = df['State Code'],
       locationmode ='USA-states',
-      z = df[metric_name].astype(int),
+      z = df[metric_name].astype(float),
       colorscale = scl,
       autocolorscale = False,
       colorbar = dict(
         title = bar_title,
-        tick0 = 0,
         tickmode = 'array',
         tickvals = tickarray,
-        ticktext = ticklabs)
+        ticktext = ticklabs,
+        )
       )
 
   layout = dict(
       geo = dict(scope='usa', projection = dict(type = 'albers usa'),
       showlakes= False, landcolor = 'rgb(213, 213, 211)'),
       title = chart_title,
+      annotations = caption
       )
 
   choromap = go.Figure(data=[data], layout=layout)
+
   if len(gender) == 1:
       fname = ' '.join(filter(None, [year, gender[0], metric_name]))
   else:

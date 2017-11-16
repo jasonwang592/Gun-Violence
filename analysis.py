@@ -6,6 +6,7 @@ from plotly.offline import plot, iplot
 import os
 import shutil
 import choropleth_helper
+import sys
 
 
 '''Fill in below with proper paths:
@@ -105,7 +106,6 @@ sg_df = df1.merge(sg_df, how = 'left').fillna(0)
 
 '''Use District of Columbia to hold dummy data about the max Death value for each gender so
 colorbar in choropleth is consistent'''
-
 sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Male'),['Deaths']]\
     = max(sg_df[sg_df['Gender'] == 'Male']['Deaths'])
 sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Female'),['Deaths']]\
@@ -124,28 +124,25 @@ sg_df['Missing'] = sg_df['Deaths'] == 0
 sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
 '''Analysis by State, Year and Gender
-Params:
-        - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
-        - title = Plot title
-        - scale_title = Scale title
+Args to set:
+    - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
+    - title = Plot title
+    - scale_title = Scale title
 '''
 year_list = list(sg_df['Year'].unique())
 gender_list = ['Male' , 'Female']
-split_gender = False
-scale_title = 'Firearm deaths'
-metric = 'Deaths'
+split_gender = True
+scale_title = 'Firearm deaths per 100k'
+metric = 'Rate'
 metric_dir = output_path + metric + '/'
-
+gender_list = ['Female']
 for year in year_list:
     if split_gender:
         for gender in gender_list:
             output_dir = metric_dir + gender + '/'
-            title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
+            title = ' '.join(filter(None, [gender, 'Firearm Death Rate per 100k in', year]))
             choropleth_helper.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_dir)
     else:
         output_dir = metric_dir + 'Combined/'
-        title = ' '.join(filter(None, ['Firearm Deaths in', year]))
-        choropleth_helper.choropleth(choropleth_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
-
-
-
+        title = ' '.join(filter(None, ['Firearm Death Rate per 100k in', year]))
+        choropleth_helper.choropleth(sg_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
