@@ -5,7 +5,7 @@ import plotly.graph_objs as go
 from plotly.offline import plot, iplot
 import os
 import shutil
-import visualization
+import visualization as vs
 import sys
 
 
@@ -141,8 +141,8 @@ for year in year_list:
         for gender in gender_list:
             output_dir = metric_dir + gender + '/'
             title = ' '.join(filter(None, [gender, 'Firearm Death Rate per 100k in', year]))
-            choropleth_helper.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_dir)
+            vs.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_dir)
     else:
         output_dir = metric_dir + 'Combined/'
         title = ' '.join(filter(None, ['Firearm Death Rate per 100k in', year]))
-        choropleth_helper.choropleth(sg_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
+        vs.choropleth(sg_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
