@@ -3,11 +3,100 @@ from plotly.offline import plot, iplot
 import os
 import pandas as pd
 import shutil
+import math
 import time
 import numpy as np
-import sys
+import calendar
+
+def bubbleMap(df, month, year, metric, download_dir, output_dir):
+  abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
+  df = df[(df['Month'] == abbr_to_num[month]) & (df['Year'] == year)]
+  df.is_copy = False
+  df.loc[:, 'text'] = df['City Or County'] + '<br>' + (df[metric]).astype(str)
+  df.loc[:,metric] = df[metric].astype(float)
+
+  if metric == 'Injured' or 'Killed':
+    limits = [(1,2),(3,5),(6,9),(10,25),(26,450)]
+  else:
+    limits = [(1,4),(5,6),(7,9),(10,50),(50,500)]
+  scale = 100.
+
+  colors = ['rgb(153,255,153)', 'rgb(255,133,27)', 'rgb(0,116,217)', 'rgb(255,112,102)', 'rgb(255,36,20)']
+  locations = []
+  for i in range(len(limits)):
+    lim = limits[i]
+    df_sub = df[lim[0]:lim[1]]
+    location = dict(
+        type = 'scattergeo',
+        locationmode = 'USA-states',
+        lon = df_sub['Longitude'],
+        lat = df_sub['Latitude'],
+        text = df_sub['City Or County'],
+        marker = dict(
+            #TODO: Figure out some kind of mapping function to compress and stretch scale
+            size = (df_sub[metric]) ** (1/2.) * 10,
+            color = colors[i],
+            line = dict(width = 0.5, color = 'rgb(40,40,40)'),
+            sizemode = 'diameter',
+        ),
+        name = '{0} - {1}'.format(lim[0],lim[1]))
+    locations.append(location)
+
+  if metric == 'Injured':
+    title = 'Gun Violence Injuries, 2014 - 2017' + '<br>' + ' '.join([month, year])
+  elif metric == 'Killed':
+    title = 'Gun Violence Injuries, 2014 - 2017' + '<br>' + ' '.join([month, year])
+  else:
+    title = 'Combined Gun Violence Injuries and Deaths, 2014 - 2017' + '<br>' + ' '.join([month, year])
+
+  layout = dict(
+        title = title,
+        showlegend = True,
+        legend = dict(x = 0.8, y = 0.8),
+        geo = dict(
+            scope = 'usa',
+            projection = dict( type = 'albers usa' ),
+            showland = True,
+            landcolor = 'rgb(217, 217, 217)',
+            subunitwidth = 1,
+            countrywidth = 1,
+            subunitcolor = "rgb(255, 255, 255)",
+            countrycolor = "rgb(255, 255, 255)"
+        ),
+    )
+
+  fig = dict(data = locations, layout = layout)
+
+  fname =  ' '.join([month, year, 'Bubble Map'])
+  plot(fig, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
+  time.sleep(3)
+
+  output_dir += metric + '/'
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+  try:
+    if os.path.exists(output_dir + fname + '.png'):
+      shutil.move(download_dir + fname + '.png', output_dir + fname + '.png')
+    else:
+      shutil.move(download_dir + fname + '.png', output_dir)
+  except FileNotFoundError as err:
+    print('Graph not generated in time for: ' + fname + '. Run this bubble map separately.')
+
 
 def hist(df, download_dir, output_dir, cutoff = None):
+  '''Generates a histogram of injury and death counts
+
+  Args:
+    df            (DataFrame): DataFrame containing gun violence data
+    download_dir  (str)      : String for download directory where to find images after Plotly generates them
+    output_dir    (str)      : String for output directory for where to move images after generation
+    cutoff        (int)      : If provided, cuts off number of injuries or deaths at the cutoff arg
+
+  Raises:
+    FileNotFoundError: If image file is not generated fast enough, file will not be found to move from
+      download directory to output directory. Raises an error with message on what image failed to generate.
+  '''
+
   if cutoff:
     df = df[(df['Killed'] < cutoff) & (df['Injured'] < cutoff)]
   x0 = df['Killed']
@@ -38,7 +127,7 @@ def hist(df, download_dir, output_dir, cutoff = None):
     yaxis = dict(title = 'Number of Occurrences')
     )
 
-  hist = go.Figure(data=data, layout=layout)
+  hist = go.Figure(data = data, layout = layout)
 
   fname = 'Injury and Death Histogram'
   if cutoff:

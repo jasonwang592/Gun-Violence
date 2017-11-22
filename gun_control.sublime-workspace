@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"down",
+				"download_path\tstatement"
+			],
+			[
+				"output",
+				"output_dir"
+			],
+			[
+				"out",
+				"output_path\tstatement"
+			],
+			[
+				"M",
+				"MonthName"
+			],
+			[
+				"tick",
+				"ticklabs\tstatement"
+			],
+			[
 				"lin",
 				"linspace\tfunction"
 			],
@@ -12,16 +32,8 @@
 				"Columbia"
 			],
 			[
-				"tick",
-				"ticktext\tstatement"
-			],
-			[
 				"me",
 				"metric_name\tparam"
-			],
-			[
-				"output",
-				"output_path\tstatement"
 			],
 			[
 				"gender",
@@ -448,29 +460,37 @@
 	"buffers":
 	[
 		{
-			"file": "analysis.py",
+			"file": "choropleth_analysis.py",
 			"settings":
 			{
-				"buffer_size": 5961,
-				"encoding": "UTF-8",
-				"line_ending": "Unix",
-				"name": "import pandas as pd"
-			}
-		},
-		{
-			"file": "test.py",
-			"settings":
-			{
-				"buffer_size": 71,
+				"buffer_size": 5957,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "choropleth_helper.py",
+			"file": "bubble_map.py",
 			"settings":
 			{
-				"buffer_size": 4243,
+				"buffer_size": 372,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "visualization.py",
+			"settings":
+			{
+				"buffer_size": 8238,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "bubbleMap_analysis.py",
+			"settings":
+			{
+				"buffer_size": 1419,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -499,10 +519,50 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 265.0,
+		"height": 384.0,
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"git comm",
+				"Git: Commit"
+			],
+			[
+				"git add",
+				"Git: Add All"
+			],
+			[
+				"git mer",
+				"Git: Merge Branch"
+			],
+			[
+				"git change",
+				"Git: Change Branch"
+			],
+			[
+				"git co",
+				"Git: Commit"
+			],
+			[
+				"git add al",
+				"Git: Add All"
+			],
+			[
+				"git bra",
+				"Git: New Branch"
+			],
+			[
+				"dis",
+				"Anaconda: Disable linting on this file"
+			],
+			[
+				"co",
+				"Git: Commit"
+			],
+			[
+				"add a",
+				"Git: Add All"
+			],
 			[
 				"git unsta",
 				"Git: Reset (unstage) Current File"
@@ -516,27 +576,11 @@
 				"Git: Add Current File"
 			],
 			[
-				"git add",
-				"Git: Add Current File"
-			],
-			[
 				"git ignore",
 				"Git: Update Project Ignored Files"
 			],
 			[
-				"git change",
-				"Git: Change Branch"
-			],
-			[
-				"git co",
-				"Git: Commit"
-			],
-			[
 				"git ad",
-				"Git: Add All"
-			],
-			[
-				"git add al",
 				"Git: Add All"
 			],
 			[
@@ -552,10 +596,6 @@
 				"Git: Merge Branch"
 			],
 			[
-				"git comm",
-				"Git: Commit"
-			],
-			[
 				"git dele",
 				"Git: Delete Branch"
 			],
@@ -566,10 +606,6 @@
 			[
 				"git cha",
 				"Git: Change Branch"
-			],
-			[
-				"git mer",
-				"Git: Merge Branch"
 			],
 			[
 				"git com",
@@ -620,10 +656,6 @@
 				"Package Control: Install Package"
 			],
 			[
-				"dis",
-				"Anaconda: Disable linting on this file"
-			],
-			[
 				" git co",
 				"Git: Commit"
 			],
@@ -666,10 +698,6 @@
 			[
 				"git sta",
 				"Git: Stash Apply"
-			],
-			[
-				"co",
-				"Git: Commit"
 			],
 			[
 				"gitgutter",
@@ -754,10 +782,6 @@
 			[
 				"",
 				"Convert Case: Swap Case"
-			],
-			[
-				"git bra",
-				"Git: New Branch"
 			],
 			[
 				"git sat",
@@ -1017,12 +1041,18 @@
 	"expanded_folders":
 	[
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control",
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/output"
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/output",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/Rate"
 	],
 	"file_history":
 	[
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/directories.txt",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/bubbleMap_analysis.py",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/GunViolence.csv",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/analysis.py",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/choropleth_helper.py",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/test.py",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/directories.txt",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/zipcode_helper.py",
 		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
 		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
@@ -1094,7 +1124,7 @@
 	],
 	"find":
 	{
-		"height": 41.0
+		"height": 24.0
 	},
 	"find_in_files":
 	{
@@ -1112,6 +1142,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"hist",
+			"fig",
+			"year_list",
+			"command",
+			"year_list",
+			"sivan",
 			"\"",
 			"auto",
 			"\"",
@@ -1179,113 +1215,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "analysis.py",
+					"file": "choropleth_analysis.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5961,
+						"buffer_size": 5957,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5270,
-								5270
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source, text.html"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"auto_name": "import pandas as pd",
-							"git_gutter_is_enabled": true,
-							"rulers":
-							[
-								120
-							],
-							"spell_check": true,
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "test.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 71,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								71,
-								71
+								4715,
+								4715
 							]
 						],
 						"settings":
@@ -1301,7 +1248,130 @@
 									"selector": "source.python - string - constant.numeric"
 								}
 							],
-							"auto_name": "",
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1350.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "bubble_map.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 372,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								356,
+								356
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "visualization.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8238,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								967,
+								967
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "bubbleMap_analysis.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1419,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1400,
+								1400
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
 							"git_gutter_is_enabled": true,
 							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
@@ -1313,51 +1383,17 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "choropleth_helper.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4243,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1916,
-								1916
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 349.0,
-						"zoom_level": 1.0
-					},
+					"file": "output/EDA/StackedBar/Gun Violence Casualties in 2017.png",
+					"semi_transient": true,
 					"stack_index": 2,
-					"type": "text"
+					"type": "image"
 				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 40.0
+		"height": 24.0
 	},
 	"input":
 	{
@@ -1388,7 +1424,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 236.0
+		"height": 44.0
 	},
 	"output.find_results":
 	{
@@ -1406,7 +1442,7 @@
 	"project": "gun_control.sublime-project",
 	"replace":
 	{
-		"height": 78.0
+		"height": 44.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1445,12 +1481,16 @@
 	},
 	"select_symbol":
 	{
-		"height": 0.0,
+		"height": 129.0,
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"",
+				"calcTransform"
+			]
 		],
-		"width": 0.0
+		"width": 400.0
 	},
 	"selected_group": 0,
 	"settings":
