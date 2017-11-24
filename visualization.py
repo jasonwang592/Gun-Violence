@@ -16,16 +16,17 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
   df.loc[:,metric] = df[metric].astype(float)
 
   if metric == 'Injured' or 'Killed':
-    limits = [(1,2),(3,5),(6,9),(10,25),(26,450)]
+    limits = [(0,2),(3,5),(6,9),(10,25),(26,450)]
   else:
-    limits = [(1,4),(5,6),(7,9),(10,50),(50,500)]
+    limits = [(0,4),(5,6),(7,9),(10,50),(50,500)]
   scale = 100.
 
   colors = ['rgb(153,255,153)', 'rgb(255,133,27)', 'rgb(0,116,217)', 'rgb(255,112,102)', 'rgb(255,36,20)']
   locations = []
   for i in range(len(limits)):
     lim = limits[i]
-    df_sub = df[lim[0]:lim[1]]
+    # df_sub = df[lim[0]:lim[1]]
+    df_sub = df[(df[metric] >= lim[0]) & (df[metric] < lim[1])]
     location = dict(
         type = 'scattergeo',
         locationmode = 'USA-states',
@@ -38,6 +39,7 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
             color = colors[i],
             line = dict(width = 0.5, color = 'rgb(40,40,40)'),
             sizemode = 'diameter',
+            opacity = 0.6
         ),
         name = '{0} - {1}'.format(lim[0],lim[1]))
     locations.append(location)
@@ -52,7 +54,6 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
   layout = dict(
         title = title,
         showlegend = True,
-        legend = dict(x = 0.8, y = 0.8),
         geo = dict(
             scope = 'usa',
             projection = dict( type = 'albers usa' ),
@@ -67,7 +68,7 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
 
   fig = dict(data = locations, layout = layout)
 
-  fname =  ' '.join([month, year, 'Bubble Map'])
+  fname =  ' '.join([year, str(abbr_to_num[month]), 'Bubble Map'])
   plot(fig, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
   time.sleep(3)
 
@@ -304,7 +305,7 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
   '''Plot the image and set a wait time so Plotly can generate the plot, save it and then move it to the
   correct output directory. If the process takes too long, increase the sleep time'''
   plot(choromap, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
-  time.sleep(3)
+  time.sleep(2)
 
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
