@@ -9,13 +9,18 @@ import os
 from plotly.offline import plot, iplot
 
 
-def generateBubbleMap(df, download_path, output_path, metric = None, year = None, month = None):
-  if year == None and month == None:
-    for year in list(df['Year'].unique()):
-      for month in list(df['MonthName'].unique()):
-        vs.bubbleMap(df, month, year, metric, download_path, output_path + 'BubbleMap/')
-  else;
-    vs.bubbleMap(df, month, year, download_path, output_path + 'BubbleMap'/)
+def generateBubbleMap(df, download_path, output_path, metric = 'Total', year = None, month = None):
+  metric = metric.capitalize()
+  try:
+    if year == None and month == None:
+      for year in list(df['Year'].unique()):
+        for month in list(df['MonthName'].unique()):
+          vs.bubbleMap(df, month, year, metric, download_path, output_path + 'BubbleMap/')
+    else:
+      vs.bubbleMap(df, month, year, metric, download_path, output_path + 'BubbleMap/')
+  except KeyError as e:
+    print("Metric not found. Please define metric as either 'Killed' or 'Injured'.")
+
 
 if __name__ == '__main__':
   download_path = '/Users/jason.wang/Downloads/'
@@ -45,9 +50,11 @@ if __name__ == '__main__':
 
   #Generate choronological bubble maps of gun violence killings and injuries
   df = df.sort_values(by = ['Year','Month'])
-  metric = 'Injured'
-  generateBubbleMap(df, metric, download_path, output_path, metric = 'Injured')
+  # metric = 'Killed'
 
+  generateBubbleMap(df, download_path, output_path)
+  # generateBubbleMap(df, download_path, output_path, metric = 'Injured', year = 2015, month = 'Apr')
+  sys.exit()
   #Generate histogram for all data
   vs.hist(df, download_path, output_path)
 

@@ -9,6 +9,23 @@ import numpy as np
 import calendar
 
 def bubbleMap(df, month, year, metric, download_dir, output_dir):
+  '''Splits out dataframe based on filter criteria provided, plots the data on a cbubble map via Plotly
+  and then saves the image to the user's download directory before moving it to a specific output directory
+
+  Args:
+    df            (DataFrame): DataFrame containing relevant data
+    year          (str)      : String representing year to filter data on
+    month         (str)      : String abbreviation for month to filter data on
+    metric        (str)      : The relevant metric that is being plotted. If None, plot total incidences.
+    download_dir  (str)      : String for download directory where to find images after Plotly generates them
+    output_dir    (str)      : String for output directory for where to move images after generation
+
+  Raises:
+    FileNotFoundError: If image file is not generated fast enough, file will not be found to move from
+      download directory to output directory. Raises an error with message on what image failed to generate.
+
+  '''
+  year = str(year)
   abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
   df = df[(df['Month'] == abbr_to_num[month]) & (df['Year'] == year)]
   df.is_copy = False
@@ -19,13 +36,11 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
     limits = [(0,2),(3,5),(6,9),(10,25),(26,450)]
   else:
     limits = [(0,4),(5,6),(7,9),(10,50),(50,500)]
-  scale = 100.
 
   colors = ['rgb(153,255,153)', 'rgb(255,133,27)', 'rgb(0,116,217)', 'rgb(255,112,102)', 'rgb(255,36,20)']
   locations = []
   for i in range(len(limits)):
     lim = limits[i]
-    # df_sub = df[lim[0]:lim[1]]
     df_sub = df[(df[metric] >= lim[0]) & (df[metric] < lim[1])]
     location = dict(
         type = 'scattergeo',
@@ -34,7 +49,6 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
         lat = df_sub['Latitude'],
         text = df_sub['City Or County'],
         marker = dict(
-            #TODO: Figure out some kind of mapping function to compress and stretch scale
             size = (df_sub[metric]) ** (1/2.) * 10,
             color = colors[i],
             line = dict(width = 0.5, color = 'rgb(40,40,40)'),
@@ -47,13 +61,14 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
   if metric == 'Injured':
     title = 'Gun Violence Injuries, 2014 - 2017' + '<br>' + ' '.join([month, year])
   elif metric == 'Killed':
-    title = 'Gun Violence Injuries, 2014 - 2017' + '<br>' + ' '.join([month, year])
+    title = 'Gun Violence Deaths, 2014 - 2017' + '<br>' + ' '.join([month, year])
   else:
     title = 'Combined Gun Violence Injuries and Deaths, 2014 - 2017' + '<br>' + ' '.join([month, year])
 
   layout = dict(
         title = title,
         showlegend = True,
+        legend = dict(x = 0.8, y = 0.3),
         geo = dict(
             scope = 'usa',
             projection = dict( type = 'albers usa' ),
@@ -70,7 +85,7 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
 
   fname =  ' '.join([year, str(abbr_to_num[month]), 'Bubble Map'])
   plot(fig, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
-  time.sleep(3)
+  time.sleep(2)
 
   output_dir += metric + '/'
   if not os.path.exists(output_dir):
@@ -305,7 +320,7 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
   '''Plot the image and set a wait time so Plotly can generate the plot, save it and then move it to the
   correct output directory. If the process takes too long, increase the sleep time'''
   plot(choromap, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
-  time.sleep(2)
+  time.sleep(1.5)
 
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
