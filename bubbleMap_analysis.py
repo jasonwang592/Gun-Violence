@@ -53,8 +53,9 @@ if __name__ == '__main__':
   # metric = 'Killed'
 
   generateBubbleMap(df, download_path, output_path)
-  # generateBubbleMap(df, download_path, output_path, metric = 'Injured', year = 2015, month = 'Apr')
+  # generateBubbleMap(df, download_path, output_path, year = 2017, month = 'Oct')
   sys.exit()
+
   #Generate histogram for all data
   vs.hist(df, download_path, output_path)
 

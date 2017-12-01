@@ -9,24 +9,20 @@ import visualization as vs
 import sys
 
 
-'''Fill in below with proper paths:
-    download_path = Directory where browser downloads plots from plotly into
-    output_path = Directory where output files are stored
-'''
+# Fill in below with proper paths:
+#     download_path = Directory where browser downloads plots from plotly into
+#     output_path = Directory where output files are stored
 download_path = '/Users/jason.wang/Downloads/'
 output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/'
 
 
 sg_df = pd.read_csv('files/state_gender.txt', sep = '\t')
-sga_df = pd.read_csv('files/state_gender_age.txt', sep = '\t')
 
-'''
-* Filling DataFrame with all possible combinations of State, Year and Gender so we can infer some values
-later during aggregation by taking the average there is missing data. Marking columns that were previously missing
-so we can denote that on US map representation
-* Cleaning up some redundant columns. Removed some rows where data had not been collected yet
-Recalculating the rate per 100k
-'''
+# * Filling DataFrame with all possible combinations of State, Year and Gender so we can infer some values
+# later during aggregation by taking the average there is missing data. Marking columns that were previously missing
+# so we can denote that on US map representation
+# * Cleaning up some redundant columns. Removed some rows where data had not been collected yet
+# Recalculating the rate per 100k
 all_years = [1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015]
 all_genders = ['Male', 'Female']
 all_states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
@@ -99,9 +95,6 @@ df1 = pd.DataFrame(columns = ['State', 'Year', 'Gender'], data=list(itertools.pr
 
 #Drop some useless data and left merge so we don't have missing keys on year and state
 sg_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)
-sga_df.drop(['Notes', 'Crude Rate', 'Ten-Year Age Groups', 'Gender Code', 'Year Code', 'State Code'],
-    inplace = True, axis = 1)
-sga_df.rename(columns = {'Ten-Year Age Groups Code': 'Age Group'}, inplace = True)
 sg_df = df1.merge(sg_df, how = 'left').fillna(0)
 
 '''Use District of Columbia to hold dummy data about the max Death value for each gender so
@@ -114,21 +107,17 @@ sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Fema
 
 sg_df['State Code'] = sg_df['State'].map(inverted)
 sg_df.Year = sg_df.Year.astype(int).astype(str)
-sga_df.Year = sga_df.Year.astype(int).astype(str)
 sg_df.Population = sg_df.Population.astype(float)
-sga_df.Population = sga_df.Population.astype(float)
 
-sga_df['Rate'] = (sga_df.Deaths/sga_df.Population) * 100000
 sg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000
-sg_df['Missing'] = sg_df['Deaths'] == 0
+sg_df['Missing'] = (sg_df['Deaths'] == 0)
 sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
-'''Analysis by State, Year and Gender
-Args to set:
-    - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
-    - title = Plot title
-    - scale_title = Scale title
-'''
+# Analysis by State, Year and Gender
+# Args to set:
+#     - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
+#     - title = Plot title
+#     - scale_title = Scale title
 year_list = list(sg_df['Year'].unique())
 gender_list = ['Male' , 'Female']
 split_gender = True

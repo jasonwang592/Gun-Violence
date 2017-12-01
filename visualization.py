@@ -32,16 +32,16 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
   df.loc[:, 'text'] = df['City Or County'] + '<br>' + (df[metric]).astype(str)
   df.loc[:,metric] = df[metric].astype(float)
 
-  if metric == 'Injured' or 'Killed':
+  if metric in ('Injured' or 'Killed'):
     limits = [(0,2),(3,5),(6,9),(10,25),(26,450)]
   else:
-    limits = [(0,4),(5,6),(7,9),(10,50),(50,500)]
+    limits = [(0,4),(5,6),(7,9),(10,50),(51,500)]
 
-  colors = ['rgb(153,255,153)', 'rgb(255,133,27)', 'rgb(0,116,217)', 'rgb(255,112,102)', 'rgb(255,36,20)']
+  colors = ['rgb(153,255,153)', 'rgb(0,116,217)', 'rgb(255,133,27)', 'rgb(255,112,102)', 'rgb(255,36,20)']
   locations = []
   for i in range(len(limits)):
     lim = limits[i]
-    df_sub = df[(df[metric] >= lim[0]) & (df[metric] < lim[1])]
+    df_sub = df[(df[metric] > lim[0]) & (df[metric] <= lim[1])]
     location = dict(
         type = 'scattergeo',
         locationmode = 'USA-states',
@@ -53,9 +53,9 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
             color = colors[i],
             line = dict(width = 0.5, color = 'rgb(40,40,40)'),
             sizemode = 'diameter',
-            opacity = 0.6
+            opacity = 0.55
         ),
-        name = '{0} - {1}'.format(lim[0],lim[1]))
+        name = '{0} - {1}'.format((lim[0] + 1),lim[1]))
     locations.append(location)
 
   if metric == 'Injured':
@@ -85,7 +85,7 @@ def bubbleMap(df, month, year, metric, download_dir, output_dir):
 
   fname =  ' '.join([year, str(abbr_to_num[month]), 'Bubble Map'])
   plot(fig, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
-  time.sleep(2)
+  time.sleep(1.5)
 
   output_dir += metric + '/'
   if not os.path.exists(output_dir):
@@ -263,6 +263,7 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
               showarrow=False,
               xref="paper", yref="paper",
               x=0.005, y=0.025)]
+  #This looks wrong
   elif not include_dc and metric_name == 'Rate':
     df.loc[(df['State Code'] == 'DC') & (df['Gender'] == gender), ['Rate']] = max(df[(df['State Code'] != 'DC') & (df['Gender'] == gender)]['Rate'])
   else:
