@@ -7,6 +7,7 @@ import os
 import shutil
 import visualization as vs
 import sys
+import seaborn as sns
 
 
 # Fill in below with proper paths:
@@ -97,8 +98,8 @@ df1 = pd.DataFrame(columns = ['State', 'Year', 'Gender'], data=list(itertools.pr
 sg_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)
 sg_df = df1.merge(sg_df, how = 'left').fillna(0)
 
-'''Use District of Columbia to hold dummy data about the max Death value for each gender so
-colorbar in choropleth is consistent'''
+#Use District of Columbia to hold dummy data about the max Death value for each gender so
+#colorbar in choropleth is consistent
 sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Male'),['Deaths']]\
     = max(sg_df[sg_df['Gender'] == 'Male']['Deaths'])
 sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Female'),['Deaths']]\
@@ -113,15 +114,36 @@ sg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000
 sg_df['Missing'] = (sg_df['Deaths'] == 0)
 sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
+
+#Analysis of trends
+#Filter out any states that don't have complete data
+#Calculate percent change in deaths since base year of 1999
+temp = sg_df.groupby(['State', 'Gender']).filter(lambda x: x['Rate'].isnull().sum() < 1).copy()
+temp = temp[temp['State'] != 'District of Columbia']
+temp['Net Percent Change'] = temp.groupby(['State', 'Gender'])['Deaths'].apply(lambda x: x.div(x.iloc[0]).subtract(1).mul(100))
+temp['Rolling Percent Change'] = temp.groupby(['State', 'Gender'])['Deaths'].pct_change() * 100
+trend_df = temp.sort_values(by = ['State', 'Gender', 'Year'])
+print(temp)
+
+
+#TODO: Need to rotate DataFrame (after filtering by gender) so each row is a state and every column is a different year
+trend_df = trend_df[trend_df['Gender'] == 'Male']
+
+matrix = trend_df.pivot(index = 'State', columns = 'Year', values = 'Net Percent Change')
+plt.figure(figsize = (15,10))
+p = sns.heatmap(data = matrix, annot = True, cmap = 'RdBu_r', fmt = '.1f')
+p.set_xticklabels(p.get_xticklabels(), rotation = 90)
+p.set_yticklabels(p.get_yticklabels(), rotation = 0)
+plt.title('Percent Change in Firearm Deaths by State Compared to 1999')
+
+plt.show()
+
+sys.exit()
+
 # Analysis by State, Year and Gender
-# Args to set:
-#     - split_gender = Splits out Male and Female plots if set to True. Aggregates otherwise
-#     - title = Plot title
-#     - scale_title = Scale title
 year_list = list(sg_df['Year'].unique())
 gender_list = ['Male' , 'Female']
 split_gender = True
-scale_title = 'Firearm deaths per 100k'
 metric = 'Rate'
 metric_dir = output_path + metric + '/'
 gender_list = ['Female']
@@ -129,9 +151,7 @@ for year in year_list:
     if split_gender:
         for gender in gender_list:
             output_dir = metric_dir + gender + '/'
-            title = ' '.join(filter(None, [gender, 'Firearm Death Rate per 100k in', year]))
-            vs.choropleth(sg_df, year, gender, metric, title, scale_title, download_path, output_dir)
+            vs.choropleth(sg_df, year, gender, metric, download_path, output_dir)
     else:
         output_dir = metric_dir + 'Combined/'
-        title = ' '.join(filter(None, ['Firearm Death Rate per 100k in', year]))
-        vs.choropleth(sg_df, year, gender_list, metric, title, scale_title, download_path, output_dir)
+        vs.choropleth(sg_df, year, gender_list, metric, download_path, output_dir)

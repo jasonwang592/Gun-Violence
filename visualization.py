@@ -233,17 +233,15 @@ def stackedBar(df, year, download_dir, output_dir):
   except FileNotFoundError as err:
     print('Graph not generated in time for: ' + fname + '. Run this stacked bar chart separately.')
 
-def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_dir, output_dir, include_dc = False):
+def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_dir, include_dc = False):
   '''Splits out dataframe based on filter criteria provided, plots the data on a choropleth via Plotly
   and then saves the image to the user's download directory before moving it to a specific output directory
 
   Args:
     df            (DataFrame): DataFrame containing relevant data
     year          (str)      : String representing year to filter the data on
-    Gender        (list)     : List containing gender(s) to filter data on
+    gender        (list)     : List containing gender(s) to filter data on
     metric        (str)      : The relevant metric that is being plotted
-    chart_title   (str)      : String containing chart title
-    bar_title     (str)      : String containing colorbar title
     download_dir  (str)      : String for download directory where to find images after Plotly generates them
     output_dir    (str)      : String for output directory for where to move images after generation
     include_dc    (bool)     : Boolean to include DC or not since it introduces severe outliers
@@ -253,6 +251,13 @@ def choropleth(df, year, gender, metric_name, chart_title, bar_title, download_d
       download directory to output directory. Raises an error with message on what image failed to generate.
 
   '''
+  if metric_name == 'Rate':
+    bar_title = 'Firearm deaths per 100K'
+    title = ' '.join(filter(None, [gender, 'Firearm Death Rate per 100k in', year]))
+  else:
+    bar_title = 'Firearm deaths'
+    title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
+
   caption = []
   if include_dc:
     caption = [dict(text = '*Data includes District of Columbia',
