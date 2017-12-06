@@ -1,14 +1,8 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import itertools
 import plotly.graph_objs as go
-from plotly.offline import plot, iplot
-import os
-import shutil
 import visualization as vs
 import sys
-import seaborn as sns
-
 
 # Fill in below with proper paths:
 #     download_path = Directory where browser downloads plots from plotly into
@@ -16,8 +10,7 @@ import seaborn as sns
 download_path = '/Users/jason.wang/Downloads/'
 output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/'
 
-
-sg_df = pd.read_csv('files/state_gender.txt', sep = '\t')
+main_df = pd.read_csv('files/state_gender.txt', sep = '\t')
 
 # * Filling DataFrame with all possible combinations of State, Year and Gender so we can infer some values
 # later during aggregation by taking the average there is missing data. Marking columns that were previously missing
@@ -95,42 +88,45 @@ combined = [all_states, all_years, all_genders]
 df1 = pd.DataFrame(columns = ['State', 'Year', 'Gender'], data=list(itertools.product(*combined)))
 
 #Drop some useless data and left merge so we don't have missing keys on year and state
-sg_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)
-sg_df = df1.merge(sg_df, how = 'left').fillna(0)
+main_df.drop(['Notes', 'Crude Rate','Gender Code', 'Year Code', 'State Code'], inplace = True, axis = 1)
+main_df = df1.merge(main_df, how = 'left').fillna(0)
 
 #Use District of Columbia to hold dummy data about the max Death value for each gender so
 #colorbar in choropleth is consistent
-sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Male'),['Deaths']]\
-    = max(sg_df[sg_df['Gender'] == 'Male']['Deaths'])
-sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Female'),['Deaths']]\
-    = max(sg_df[sg_df['Gender'] == 'Female']['Deaths'])
+main_df.loc[(main_df['State'] == 'District of Columbia') & (main_df['Gender'] == 'Male'),['Deaths']]\
+    = max(main_df[main_df['Gender'] == 'Male']['Deaths'])
+main_df.loc[(main_df['State'] == 'District of Columbia') & (main_df['Gender'] == 'Female'),['Deaths']]\
+    = max(main_df[main_df['Gender'] == 'Female']['Deaths'])
 
 
 #Populate State Code and compute firearm death rate
-sg_df['State Code'] = sg_df['State'].map(inverted)
-sg_df.Year = sg_df.Year.astype(int).astype(str)
-sg_df.Population = sg_df.Population.astype(float)
-sg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000
-sg_df['Missing'] = (sg_df['Deaths'] == 0)
-sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
+main_df['State Code'] = main_df['State'].map(inverted)
+main_df.Year = main_df.Year.astype(int).astype(str)
+main_df.Population = main_df.Population.astype(float)
+main_df['Rate'] = (main_df['Deaths'] / main_df['Population']) * 100000
+main_df['Missing'] = (main_df['Deaths'] == 0)
+main_df = main_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
 #Heatmap analysis of trends
 #Filter out any states that don't have complete data
 #Calculate percent change in deaths since base year of 1999
-temp = sg_df.groupby(['State', 'Gender']).filter(lambda x: x['Rate'].isnull().sum() < 1).copy()
-temp = temp[temp['State'] != 'District of Columbia']
-temp['Net Percent Change'] = temp.groupby(['State', 'Gender'])['Deaths'].apply(lambda x: x.div(x.iloc[0]).subtract(1).mul(100))
-temp['Rolling Percent Change'] = temp.groupby(['State', 'Gender'])['Deaths'].pct_change() * 100
-trend_df = temp.sort_values(by = ['State', 'Gender', 'Year'])
+complete_df = main_df.groupby(['State', 'Gender']).filter(lambda x: x['Rate'].isnull().sum() < 1).copy()
+complete_df = complete_df[complete_df['State'] != 'District of Columbia']
+complete_df['Net Percent Change'] = complete_df.groupby(['State', 'Gender'])['Rate'].apply(lambda x: x.div(x.iloc[0]).subtract(1).mul(100))
+complete_df['Rolling Percent Change'] = complete_df.groupby(['State', 'Gender'])['Rate'].pct_change() * 100
+trend_df = complete_df.sort_values(by = ['State', 'Gender', 'Year'])
+
 
 for gender in ['Male', 'Female']:
-  for metric in ['Net Percent Change', 'Rolling Percent Change']:
-    vs.heatmapper(trend_df, gender, metric)
+    vs.scatterLine(complete_df, 'Male', 'Rolling Percent Change')
 
+# for gender in ['Male', 'Female']:
+#   for metric in ['Net Percent Change', 'Rolling Percent Change']:
+#     vs.heatmapper(trend_df, gender, metric)
 
 sys.exit()
 #Choropleth analysis by State, Year and Gender
-year_list = list(sg_df['Year'].unique())
+year_list = list(main_df['Year'].unique())
 gender_list = ['Male' , 'Female']
 split_gender = True
 metric = 'Rate'
@@ -140,7 +136,7 @@ for year in year_list:
     if split_gender:
         for gender in gender_list:
             output_dir = metric_dir + gender + '/'
-            vs.choropleth(sg_df, year, gender, metric, download_path, output_dir)
+            vs.choropleth(main_df, year, gender, metric, download_path, output_dir)
     else:
         output_dir = metric_dir + 'Combined/'
-        vs.choropleth(sg_df, year, gender_list, metric, download_path, output_dir)
+        vs.choropleth(main_df, year, gender_list, metric, download_path, output_dir)

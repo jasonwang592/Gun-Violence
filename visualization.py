@@ -1,5 +1,6 @@
 import plotly.graph_objs as go
 from plotly.offline import plot, iplot
+from matplotlib import gridspec
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
@@ -10,7 +11,47 @@ import time
 import numpy as np
 import calendar
 
-def heatmapper(df, gender, metric, output_dir = 'output/heatmap/', save = True):
+def scatterLine(df, gender, metric, separate = False, output_dir = 'output/trends/', save = True):
+  df = df[df['Gender'] == gender]
+
+  if separate:
+    #Plot all states on subplots
+    N = len(list(df['State'].unique()))
+    plot_pairs = zip(range(N), list(df['State'].unique()))
+    cols = 6
+    rows = int(math.ceil(N / cols))
+    gs = gridspec.GridSpec(rows, cols)
+    fig = plt.figure(figsize = (19,11))
+
+    for pair in plot_pairs:
+      plt.locator_params(axis='x', nticks=5)
+      plt.locator_params(axis='y', nticks=6)
+      ax = fig.add_subplot(gs[pair[0]])
+      state_df = df[df['State'] == pair[1]]
+      state_df = state_df[['Year', metric]]
+      state_df = state_df.set_index('Year')[metric]
+      sns.tsplot(data = state_df)
+    fig.tight_layout()
+    fname = '-'.join([gender, 'YOY Firearm Death Rate by State'])
+  else:
+    #Plot time series with confidence intervals
+    fig = plt.figure(figsize = (15,10))
+    sns.tsplot(data = df, time = 'Year',unit = 'State', value = metric)
+    plt.xlabel('Year', fontsize = 15)
+    plt.ylabel('Percent Change', fontsize = 15)
+    plt.title(', '.join(['Percent Change in Year Over Year Firearm Death Rate', gender]), fontsize = 15)
+    fname = '-'.join([gender, 'YOY Firearm Death Rate Trend'])
+
+  if save:
+    if not os.path.exists(output_dir):
+      os.makedirs(output_dir)
+    plt.savefig(output_dir + fname)
+  else:
+    plt.show()
+  sys.exit()
+
+
+def heatmapper(df, gender, metric, output_dir = 'output/trends/heatmap/', save = True):
   '''Plots a heatmap for state and year for the metric passed through.
 
   Args:
@@ -25,9 +66,9 @@ def heatmapper(df, gender, metric, output_dir = 'output/heatmap/', save = True):
   '''
   print(gender, metric)
   if metric == 'Net Percent Change':
-    title = ', '.join(['Percent Change in Firearm Deaths by State Compared to 1999', gender])
+    title = ', '.join(['Percent Change in Firearm Death Rate by State Compared to 1999', gender])
   elif metric == 'Rolling Percent Change':
-    title = ', '.join(['Year Over Year Percent Change in Firearm Deaths by State since 1999', gender])
+    title = ', '.join(['Year Over Year Percent Change in Firearm Death Rate by State since 1999', gender])
   else:
     raise ValueError('Provide a valid metric (Net Percent Change or Rolling Percent Change).')
   fname = '-'.join([gender, metric])
@@ -42,9 +83,12 @@ def heatmapper(df, gender, metric, output_dir = 'output/heatmap/', save = True):
   plt.ylabel('State', fontsize = 15)
   plt.title(title, fontsize = 20)
 
-  if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-  plt.savefig(output_dir + fname)
+  if save:
+    if not os.path.exists(output_dir):
+      os.makedirs(output_dir)
+    plt.savefig(output_dir + fname)
+  else:
+    plt.show()
 
 def bubbleMap(df, month, year, metric, download_dir, output_dir):
   '''Splits out dataframe based on filter criteria provided, plots the data on a cbubble map via Plotly
