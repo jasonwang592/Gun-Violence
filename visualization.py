@@ -1,5 +1,7 @@
 import plotly.graph_objs as go
 from plotly.offline import plot, iplot
+import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 import pandas as pd
 import shutil
@@ -7,6 +9,42 @@ import math
 import time
 import numpy as np
 import calendar
+
+def heatmapper(df, gender, metric, output_dir = 'output/heatmap/', save = True):
+  '''Plots a heatmap for state and year for the metric passed through.
+
+  Args:
+  df            (DataFrame): DataFrame containing relevant data
+  gender        (str)      : The gender to render the heatmap for
+  metric        (str)      : The relevant metric that is being plotted.
+  output_dir    (str)      : String for output directory for where to move images after generation
+  save          (bool)     : Saves the file if true else displays the plot.
+
+  Raises:
+    ValueError: If the metric provided is not legitimate, throws an error.
+  '''
+  print(gender, metric)
+  if metric == 'Net Percent Change':
+    title = ', '.join(['Percent Change in Firearm Deaths by State Compared to 1999', gender])
+  elif metric == 'Rolling Percent Change':
+    title = ', '.join(['Year Over Year Percent Change in Firearm Deaths by State since 1999', gender])
+  else:
+    raise ValueError('Provide a valid metric (Net Percent Change or Rolling Percent Change).')
+  fname = '-'.join([gender, metric])
+
+  df = df[df['Gender'] == gender]
+  matrix = df.pivot(index = 'State', columns = 'Year', values = metric)
+  plt.figure(figsize = (15,10))
+  p = sns.heatmap(data = matrix, annot = True, cmap = 'RdBu_r', fmt = '.1f', cbar_kws = {'label' : 'Percent Change'})
+  p.set_xticklabels(p.get_xticklabels(), rotation = 90)
+  p.set_yticklabels(p.get_yticklabels(), rotation = 0)
+  plt.xlabel('Year', fontsize = 15)
+  plt.ylabel('State', fontsize = 15)
+  plt.title(title, fontsize = 20)
+
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+  plt.savefig(output_dir + fname)
 
 def bubbleMap(df, month, year, metric, download_dir, output_dir):
   '''Splits out dataframe based on filter criteria provided, plots the data on a cbubble map via Plotly

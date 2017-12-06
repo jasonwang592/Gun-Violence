@@ -106,16 +106,15 @@ sg_df.loc[(sg_df['State'] == 'District of Columbia') & (sg_df['Gender'] == 'Fema
     = max(sg_df[sg_df['Gender'] == 'Female']['Deaths'])
 
 
+#Populate State Code and compute firearm death rate
 sg_df['State Code'] = sg_df['State'].map(inverted)
 sg_df.Year = sg_df.Year.astype(int).astype(str)
 sg_df.Population = sg_df.Population.astype(float)
-
 sg_df['Rate'] = (sg_df.Deaths/sg_df.Population) * 100000
 sg_df['Missing'] = (sg_df['Deaths'] == 0)
 sg_df = sg_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Population', 'Rate', 'Missing']]
 
-
-#Analysis of trends
+#Heatmap analysis of trends
 #Filter out any states that don't have complete data
 #Calculate percent change in deaths since base year of 1999
 temp = sg_df.groupby(['State', 'Gender']).filter(lambda x: x['Rate'].isnull().sum() < 1).copy()
@@ -123,24 +122,14 @@ temp = temp[temp['State'] != 'District of Columbia']
 temp['Net Percent Change'] = temp.groupby(['State', 'Gender'])['Deaths'].apply(lambda x: x.div(x.iloc[0]).subtract(1).mul(100))
 temp['Rolling Percent Change'] = temp.groupby(['State', 'Gender'])['Deaths'].pct_change() * 100
 trend_df = temp.sort_values(by = ['State', 'Gender', 'Year'])
-print(temp)
 
+for gender in ['Male', 'Female']:
+  for metric in ['Net Percent Change', 'Rolling Percent Change']:
+    vs.heatmapper(trend_df, gender, metric)
 
-#TODO: Need to rotate DataFrame (after filtering by gender) so each row is a state and every column is a different year
-trend_df = trend_df[trend_df['Gender'] == 'Male']
-
-matrix = trend_df.pivot(index = 'State', columns = 'Year', values = 'Net Percent Change')
-plt.figure(figsize = (15,10))
-p = sns.heatmap(data = matrix, annot = True, cmap = 'RdBu_r', fmt = '.1f')
-p.set_xticklabels(p.get_xticklabels(), rotation = 90)
-p.set_yticklabels(p.get_yticklabels(), rotation = 0)
-plt.title('Percent Change in Firearm Deaths by State Compared to 1999')
-
-plt.show()
 
 sys.exit()
-
-# Analysis by State, Year and Gender
+#Choropleth analysis by State, Year and Gender
 year_list = list(sg_df['Year'].unique())
 gender_list = ['Male' , 'Female']
 split_gender = True
