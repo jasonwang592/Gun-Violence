@@ -463,16 +463,7 @@
 			"file": "choropleth_analysis.py",
 			"settings":
 			{
-				"buffer_size": 5957,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "bubble_map.py",
-			"settings":
-			{
-				"buffer_size": 372,
+				"buffer_size": 6030,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -481,17 +472,26 @@
 			"file": "visualization.py",
 			"settings":
 			{
-				"buffer_size": 8238,
+				"buffer_size": 16035,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/User/Python3.sublime-build",
+			"settings":
+			{
+				"buffer_size": 174,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "untitled.sublime-build"
 			}
 		},
 		{
 			"file": "bubbleMap_analysis.py",
 			"settings":
 			{
-				"buffer_size": 1419,
-				"encoding": "UTF-8",
+				"buffer_size": 2739,
 				"line_ending": "Unix"
 			}
 		}
@@ -519,10 +519,70 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 384.0,
-		"last_filter": "",
+		"height": 129.0,
+		"last_filter": "open re",
 		"selected_items":
 		[
+			[
+				"open re",
+				"PackageResourceViewer: Open Resource"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"DIS ",
+				"Anaconda: Disable linting on this file"
+			],
+			[
+				"dis",
+				"Anaconda: Disable linting on this file"
+			],
+			[
+				"git status",
+				"Git: Status"
+			],
+			[
+				"git dif",
+				"Git: Diff Current File"
+			],
+			[
+				"git diff",
+				"Git: Diff Current File"
+			],
+			[
+				"git di",
+				"Git: Diff Tool All"
+			],
+			[
+				"git pu",
+				"Git: Pull Using Rebase"
+			],
+			[
+				"git stash",
+				"Git: Stash Changes"
+			],
+			[
+				"git rever",
+				"GitGutter: Revert Change to Commit"
+			],
+			[
+				"disa",
+				"Anaconda: Disable linting on this file"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"install pack",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
 			[
 				"git comm",
 				"Git: Commit"
@@ -550,10 +610,6 @@
 			[
 				"git bra",
 				"Git: New Branch"
-			],
-			[
-				"dis",
-				"Anaconda: Disable linting on this file"
 			],
 			[
 				"co",
@@ -598,10 +654,6 @@
 			[
 				"git dele",
 				"Git: Delete Branch"
-			],
-			[
-				"git di",
-				"Git: Diff Current File"
 			],
 			[
 				"git cha",
@@ -652,20 +704,12 @@
 				"Package Control: Install Package"
 			],
 			[
-				"install",
-				"Package Control: Install Package"
-			],
-			[
 				" git co",
 				"Git: Commit"
 			],
 			[
 				"git fet",
 				"Git: Fetch"
-			],
-			[
-				"git stash",
-				"Git: Stash Changes"
 			],
 			[
 				"git bran",
@@ -690,10 +734,6 @@
 			[
 				"git checkout",
 				"Git: Checkout Current File"
-			],
-			[
-				"git pu",
-				"Git: Pull Using Rebase"
 			],
 			[
 				"git sta",
@@ -754,18 +794,6 @@
 			[
 				"git f",
 				"Git: Fetch"
-			],
-			[
-				"install pack",
-				"Package Control: Install Package"
-			],
-			[
-				"instal",
-				"Package Control: Install Package"
-			],
-			[
-				"git status",
-				"Git: Status"
 			],
 			[
 				"git commit",
@@ -1006,21 +1034,9 @@
 			[
 				"anaconda",
 				"Anaconda: Disable linting on this file"
-			],
-			[
-				"prv",
-				"PackageResourceViewer: Open Resource"
-			],
-			[
-				"Package Control: ",
-				"Package Control: Install Package"
-			],
-			[
-				"install pa",
-				"Package Control: Install Package"
 			]
 		],
-		"width": 424.0
+		"width": 416.0
 	},
 	"console":
 	{
@@ -1040,13 +1056,19 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control",
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files",
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/output",
-		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/Rate"
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/output",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/output/trends"
 	],
 	"file_history":
 	[
+		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Python/Python.sublime-build",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/visualization.py",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/choropleth_analysis.py",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/visualization.pyc",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/bubbleMap_analysis.py",
+		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/bubble_map.py",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/bubbleMap_analysis.py",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/GunViolence.csv",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/analysis.py",
@@ -1054,7 +1076,6 @@
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/test.py",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/directories.txt",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/zipcode_helper.py",
-		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
 		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
 		"/Users/jason.wang/Downloads/Untitled.py",
 		"/Users/jason.wang/Documents/Analytics Projects/Gun Control/files/state_gender_age.txt",
@@ -1116,7 +1137,6 @@
 		"/Users/jason.wang/Desktop/Python Practice/practice.py",
 		"/Users/jason.wang/Desktop/Python Practice/fifty_states.pickle",
 		"/Users/jason.wang/Desktop/throwaway",
-		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Python/Python.sublime-build",
 		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/User/testPython",
 		"/Users/jason.wang/Desktop/quandlProject",
 		"/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/Python/Python.sublime-syntax",
@@ -1124,7 +1144,7 @@
 	],
 	"find":
 	{
-		"height": 24.0
+		"height": 41.0
 	},
 	"find_in_files":
 	{
@@ -1142,6 +1162,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"df",
+			"main_df",
+			"sg_df",
+			"abbrev",
+			"Dakota",
 			"hist",
 			"fig",
 			"year_list",
@@ -1197,7 +1222,7 @@
 			"ad hoc eng"
 		],
 		"highlight": true,
-		"in_selection": true,
+		"in_selection": false,
 		"preserve_case": false,
 		"regex": false,
 		"replace_history":
@@ -1215,7 +1240,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -1224,15 +1249,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5957,
+						"buffer_size": 6030,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4715,
-								4715
+								4576,
+								4576
 							]
 						],
 						"settings":
@@ -1252,27 +1277,33 @@
 							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1350.0,
+						"translation.y": 1062.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
+					"file": "output/trends/Female-YOY Firearm Death Rate Trend.png",
+					"semi_transient": true,
+					"stack_index": 0,
+					"type": "image"
+				},
+				{
 					"buffer": 1,
-					"file": "bubble_map.py",
+					"file": "visualization.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 372,
+						"buffer_size": 16035,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								356,
-								356
+								384,
+								384
 							]
 						],
 						"settings":
@@ -1290,6 +1321,35 @@
 							],
 							"git_gutter_is_enabled": true,
 							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 56.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/jason.wang/Library/Application Support/Sublime Text 3/Packages/User/Python3.sublime-build",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 174,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								72,
+								72
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": false,
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1299,60 +1359,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "visualization.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8238,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								967,
-								967
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
 					"buffer": 3,
 					"file": "bubbleMap_analysis.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1419,
+						"buffer_size": 2739,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1400,
-								1400
+								2144,
+								2144
 							]
 						],
 						"settings":
@@ -1366,10 +1386,6 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"git_gutter_is_enabled": true,
@@ -1379,21 +1395,15 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 4,
 					"type": "text"
-				},
-				{
-					"file": "output/EDA/StackedBar/Gun Violence Casualties in 2017.png",
-					"semi_transient": true,
-					"stack_index": 2,
-					"type": "image"
 				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 24.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -1424,7 +1434,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 44.0
+		"height": 248.0
 	},
 	"output.find_results":
 	{
@@ -1438,11 +1448,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"pinned_build_system": "Packages/User/Python3.sublime-build",
 	"project": "gun_control.sublime-project",
 	"replace":
 	{
-		"height": 44.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1481,7 +1491,7 @@
 	},
 	"select_symbol":
 	{
-		"height": 129.0,
+		"height": 367.0,
 		"last_filter": "",
 		"selected_items":
 		[

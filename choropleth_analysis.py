@@ -8,7 +8,7 @@ import sys
 #     download_path = Directory where browser downloads plots from plotly into
 #     output_path = Directory where output files are stored
 download_path = '/Users/jason.wang/Downloads/'
-output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun Control/output/'
+output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/output/'
 
 main_df = pd.read_csv('files/state_gender.txt', sep = '\t')
 
@@ -110,28 +110,27 @@ main_df = main_df[['State', 'State Code', 'Year', 'Gender', 'Deaths', 'Populatio
 #Heatmap analysis of trends
 #Filter out any states that don't have complete data
 #Calculate percent change in deaths since base year of 1999
-complete_df = main_df.groupby(['State', 'Gender']).filter(lambda x: x['Rate'].isnull().sum() < 1).copy()
-complete_df = complete_df[complete_df['State'] != 'District of Columbia']
-complete_df['Net Percent Change'] = complete_df.groupby(['State', 'Gender'])['Rate'].apply(lambda x: x.div(x.iloc[0]).subtract(1).mul(100))
-complete_df['Rolling Percent Change'] = complete_df.groupby(['State', 'Gender'])['Rate'].pct_change() * 100
-trend_df = complete_df.sort_values(by = ['State', 'Gender', 'Year'])
-
-
-for gender in ['Male', 'Female']:
-    vs.scatterLine(complete_df, 'Male', 'Rolling Percent Change')
+# complete_df = main_df.groupby(['State', 'Gender']).filter(lambda x: x['Rate'].isnull().sum() < 1).copy()
+# complete_df = complete_df[complete_df['State'] != 'District of Columbia']
+# complete_df['Net Percent Change'] = complete_df.groupby(['State', 'Gender'])['Rate'].apply(lambda x: x.div(x.iloc[0]).subtract(1).mul(100))
+# complete_df['Rolling Percent Change'] = complete_df.groupby(['State', 'Gender'])['Rate'].pct_change() * 100
+# trend_df = complete_df.sort_values(by = ['State', 'Gender', 'Year'])
 
 # for gender in ['Male', 'Female']:
 #   for metric in ['Net Percent Change', 'Rolling Percent Change']:
 #     vs.heatmapper(trend_df, gender, metric)
 
-sys.exit()
+# #Time series plot
+# for gender in ['Male', 'Female']:
+#     vs.scatterLine(complete_df, gender, 'Rolling Percent Change')
+
+# sys.exit()
 #Choropleth analysis by State, Year and Gender
 year_list = list(main_df['Year'].unique())
 gender_list = ['Male' , 'Female']
 split_gender = True
 metric = 'Rate'
 metric_dir = output_path + metric + '/'
-gender_list = ['Female']
 for year in year_list:
     if split_gender:
         for gender in gender_list:

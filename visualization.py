@@ -10,6 +10,7 @@ import math
 import time
 import numpy as np
 import calendar
+import sys
 
 def scatterLine(df, gender, metric, separate = False, output_dir = 'output/trends/', save = True):
   df = df[df['Gender'] == gender]
@@ -48,7 +49,6 @@ def scatterLine(df, gender, metric, separate = False, output_dir = 'output/trend
     plt.savefig(output_dir + fname)
   else:
     plt.show()
-  sys.exit()
 
 
 def heatmapper(df, gender, metric, output_dir = 'output/trends/heatmap/', save = True):
@@ -315,7 +315,7 @@ def stackedBar(df, year, download_dir, output_dir):
   except FileNotFoundError as err:
     print('Graph not generated in time for: ' + fname + '. Run this stacked bar chart separately.')
 
-def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_dir, include_dc = False):
+def choropleth(df, year, gender, metric_name, download_dir, output_dir, include_dc = False):
   '''Splits out dataframe based on filter criteria provided, plots the data on a choropleth via Plotly
   and then saves the image to the user's download directory before moving it to a specific output directory
 
@@ -335,10 +335,10 @@ def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_
   '''
   if metric_name == 'Rate':
     bar_title = 'Firearm deaths per 100K'
-    title = ' '.join(filter(None, [gender, 'Firearm Death Rate per 100k in', year]))
+    chart_title = ' '.join(filter(None, [gender, 'Firearm Death Rate per 100k in', year]))
   else:
     bar_title = 'Firearm deaths'
-    title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
+    chart_title = ' '.join(filter(None, [gender, 'Firearm Deaths in', year]))
 
   caption = []
   if include_dc:
@@ -351,10 +351,8 @@ def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_
               xref="paper", yref="paper",
               x=0.005, y=0.025)]
   #This looks wrong
-  elif not include_dc and metric_name == 'Rate':
-    df.loc[(df['State Code'] == 'DC') & (df['Gender'] == gender), ['Rate']] = max(df[(df['State Code'] != 'DC') & (df['Gender'] == gender)]['Rate'])
   else:
-    df = df[df['State Code'] != 'DC']
+    df.loc[(df['State Code'] == 'DC') & (df['Gender'] == gender), [metric_name]] = max(df[(df['State Code'] != 'DC') & (df['Gender'] == gender)][metric_name])
 
   year = str(year)
   if isinstance(gender, str):
@@ -363,7 +361,7 @@ def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_
   #Filter out gender and then build a consistent array for ticks for each gender
   df = df.loc[df['Gender'].isin(gender)]
   if metric_name == 'Deaths':
-    tickarray = np.linspace(0, np.nanmax(df['Rate'].values), 11, dtype = int, endpoint = True)
+    tickarray = np.linspace(0, np.nanmax(df['Deaths'].values), 11, dtype = int, endpoint = True)
   else:
     tickarray = np.linspace(0, np.nanmax(df['Rate'].values), 11, dtype = float, endpoint = True)
   ticklabs = [str(round(num,1)) for num in tickarray]
@@ -385,7 +383,7 @@ def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_
       autocolorscale = False,
       colorbar = dict(
         title = bar_title,
-        tickmode = 'array',
+        tickmode = "array",
         tickvals = tickarray,
         ticktext = ticklabs,
         )
@@ -408,7 +406,7 @@ def choropleth(df, year, gender, metric_name, chart_title, download_dir, output_
   '''Plot the image and set a wait time so Plotly can generate the plot, save it and then move it to the
   correct output directory. If the process takes too long, increase the sleep time'''
   plot(choromap, image_filename = fname, image = 'png', image_width = 1200, image_height = 1000)
-  time.sleep(1.5)
+  time.sleep(2)
 
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
