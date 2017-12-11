@@ -4,11 +4,15 @@ import plotly.graph_objs as go
 import visualization as vs
 import sys
 
-# Fill in below with proper paths:
-#     download_path = Directory where browser downloads plots from plotly into
-#     output_path = Directory where output files are stored
-download_path = '/Users/jason.wang/Downloads/'
-output_path = '/Users/jason.wang/Documents/Analytics Projects/Gun-Violence/output/'
+#directories.txt should have the first line be the directory where your default browser downloads
+#files into. The second line should be the directory where output files are stored.
+f = open('files/directories.txt', 'r')
+for i, line in enumerate(f):
+  if i == 0:
+    download_path = line
+  else:
+    output_path = line
+
 
 main_df = pd.read_csv('files/state_gender.txt', sep = '\t')
 
